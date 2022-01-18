@@ -12,6 +12,9 @@ import torch_geometric
 
 import ares.data as d
 import ares.model as m
+import torch
+import traceback
+from ares.dl import DataLoader
 
 root_dir = pathlib.Path(__file__).parent.absolute()
 de.load_dotenv(os.path.join(root_dir, '.env'))
@@ -26,7 +29,7 @@ def main():
     parser.add_argument('output_file', type=str)
     parser.add_argument('-f', '--filetype', type=str, default='lmdb',
                         choices=['lmdb', 'pdb', 'silent'])
-    parser.add_argument('--batch_size', type=int, default=1)
+    parser.add_argument('--batch_size', type=int, default=2)
     parser.add_argument('--label_dir', type=str, default=None)
     parser.add_argument('--nolabels', dest='use_labels', action='store_false')
     parser.add_argument('--num_workers', type=int, default=1)
@@ -45,10 +48,19 @@ def main():
     # DATA PREP
     logger.info(f"Dataset of type {hparams.filetype}")
     dataset = da.load_dataset(hparams.dataset, hparams.filetype, transform)
-    dataloader = torch_geometric.data.DataLoader(
+    print("loaded dataset")
+    #for i in range(len(dataset)):
+    #    print(dataset.__getitem__(i))
+    #dataloader = torch_geometric.loader.DataLoader(
+    dataloader  = DataLoader(
+    #dataloader = torch.utils.data.DataLoader(
         dataset,
         batch_size=hparams.batch_size,
         num_workers=hparams.num_workers)
+    print("created dataloader")
+    for i, t in enumerate(dataloader):
+        traceback.print_exc()
+        print(i, t)
 
     # MODEL SETUP
     logger.info("Loading model weights...")

@@ -89,6 +89,7 @@ def prepare(item, k=50, label_to_use='rms'):
     geo_list = torch.cat(geo_list, dim=0)
 
     r_max = 10  # Doesn't matter since we override
+    print("geo type in data: ", type(geometry))
     d = dh.DataNeighbors(features, [(num_channels, 0)], geometry, r_max)
     d.edge_attr = geo_list
     d.edge_index = nei_list
